@@ -1,0 +1,22 @@
+extends layout
+
+block content
+  div(class='container')
+    div(class="row")
+      div(class='col-xs-12')
+        a(href="#", id="shutdown", class="btn btn-block btn-lg btn-primary") Shutdown
+    div(class="row")
+      div(class='col-xs-12')
+        a(href="#", id="reboot", class="btn btn-block btn-lg btn-success") Reboot
+    div(class="row")
+      div(class='col-xs-12')
+        a(href="#", id="refresh", class="btn btn-block btn-lg btn-danger") Refresh
+    div(class='row')
+      div(class='col-xs-12')
+        a(href="#", id="reset", class="btn btn-block btn-lg btn-primary") Reset
+    div(class="row")
+      div(class='col-xs-12')
+        a(href="#", id="ip", class="btn btn-block btn-lg btn-success") Get IP
+
+block javascript
+  script(src='/js/shutdown.js')

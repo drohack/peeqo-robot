@@ -5,13 +5,11 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var cors = require('cors');
 
-// var routes = require('./routes/index')
-
 var app = express();
 var http = require('http').Server(app);
 
 app.set('views', path.join(__dirname, 'views'))
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -22,394 +20,297 @@ app.use(express.static(path.join(__dirname, 'public')))
 
 app.use(cors());
 
-// app.use('/', routes)
-
 app.get("/", function(req, res, next){
-	res.render("index.jade")
+	res.render("index.pug")
 })
 
-app.get("/listen", function(req,res,next){
-	res.render("listen.jade")
+app.get("/gif", function(req,res,next){
+	res.render("gif.pug")
 })
 
 app.get("/shutdown", function(req,res,next){
-	res.render("shutdown.jade")
+	res.render("shutdown.pug")
 })
 
-app.get("/chd", function(req, res, next){
-	res.render("chd.jade")
+app.get("/demo", function(req, res, next){
+	res.render("demo.pug")
+})
+
+app.get("/animate", function(req, res, next){
+	res.render("animate.pug")
 })
 
 app.get("/test", function(req, res, next){
-	res.render("test.jade")
+	res.render("test.pug")
+})
+
+app.get("/wifi", function(req, res, next){
+	res.render("wifi.pug")
 })
 
 var io = require('socket.io')(http);
 
-// socket connections from control panel
 
-var controlpanel_io = io.of('/controlpanel')
+// POWER SOCKETS
 
-controlpanel_io.on('connection', function(socket){
-	console.log("control panel connected")
+var server_power = io.of('/server_power')
+var peeqo_power = io.of('/peeqo_power')
 
-	/*
-	socket.on('', function(msg){
-		peeqo_io.emit("blocked")
-	})
-	*/
-
-	// CHD 
-
-	socket.on('listen_chd', function(){
-		peeqo_io.emit("listen_chd","yes")
-	})
-
-	socket.on('hi_chd', function(){
-		peeqo_io.emit("hi_chd","yes")
-	})
-
-	socket.on('bye_chd', function(){
-		peeqo_io.emit("bye_chd","yes")
-	})
-
-	socket.on('yes_chd', function(){
-		peeqo_io.emit("yes_chd","yes")
-	})
-
-	socket.on('no_chd', function(){
-		peeqo_io.emit("no_chd","yes")
-	})
-
-	socket.on('happy_chd', function(){
-		peeqo_io.emit("happy_chd","yes")
-	})
-
-	socket.on('sad_chd', function(){
-		peeqo_io.emit("sad_chd","yes")
-	})
-
-	socket.on('reset_chd', function(){
-		peeqo_io.emit("reset_chd","yes")
-	})
-
-
-	// END CHD
-
-	socket.on('tickle', function(move){
-		peeqo_io.emit("tickle",move)
-	})
-
-	socket.on('tickle-reset', function(msg){
-		peeqo_io.emit("tickle-reset","yes")
-	})
-
-	socket.on('purpose', function(msg){
-		peeqo_io.emit("purpose","yes")
-	})
-
-	socket.on('omg', function(msg){
-		peeqo_io.emit("omg","yes")
-	})
-
-	socket.on('gifjif', function(msg){
-		peeqo_io.emit("gifjif","yes")
-	})
-
-	socket.on('cameraOn', function(msg){
-		peeqo_io.emit("cameraOn","yes")
-	})
-
-	socket.on('cameraOff', function(msg){
-		peeqo_io.emit("cameraOff","yes")
-	})
-
-	socket.on('actMusic', function(msg){
-		peeqo_io.emit("actMusic","yes")
-	})
-
-	socket.on('playBeatles', function(msg){
-		peeqo_io.emit("playBeatles","yes");
-	})
-
-	socket.on('playRock', function(msg){
-		peeqo_io.emit("playRock","yes");
-	})
-
-	socket.on('blockReddit', function(msg){
-		peeqo_io.emit("blockReddit","yes");
-	})
-
-	socket.on('didWell', function(msg){
-		peeqo_io.emit("didWell","yes");
-	})
-
-	socket.on('sayNo', function(msg){
-		peeqo_io.emit("sayNo","yes");
-	})
-
-	socket.on('byebye', function(msg){
-		peeqo_io.emit("byebye","yes");
-	})
-
-	socket.on('sleepy', function(msg){
-		peeqo_io.emit("sleepy","yes");
-	})
-
-	socket.on('wakey', function(msg){
-		peeqo_io.emit("wakey","yes");
-	})
-
-	socket.on('offLights', function(msg){
-		peeqo_io.emit("offLights","yes");
-	})
-
-	socket.on('onLights', function(msg){
-		peeqo_io.emit("onLights","yes");
-	})
-
-	socket.on("shutdown", function(msg){
-		peeqo_io.emit("shutdown","yes")
-	})
-
-	socket.on("reboot", function(msg){
-		peeqo_io.emit("reboot","yes")
-	})
-
-	socket.on("listen", function(msg){
-		peeqo_io.emit("listen","yes")
-	})
-
-	socket.on("sayHi", function(msg){
-		peeqo_io.emit("sayHi","yes")
-	})
-
-	socket.on("sayBye", function(msg){
-		peeqo_io.emit("sayBye", "yes")
-	})
-
-	socket.on('takePicture', function(msg){
-		peeqo_io.emit("takePicture","yes")
-	})
-
-	socket.on("playMusic", function(msg){
-		peeqo_io.emit("playMusic", "yes")
-	})
-
-	socket.on("activateMusic", function(msg){
-		peeqo_io.emit("activateMusic","yes")
-	})
-
-	socket.on("stopMusic", function(msg){
-		peeqo_io.emit("stopMusic","yes")
-	})
-
-	socket.on("blockFacebook", function(msg){
-		peeqo_io.emit("blockFacebook","yes")
-	})
-
-	socket.on("blockTwitter", function(msg){
-		peeqo_io.emit("blockTwitter","yes")
-	})
-
-	socket.on("lightsOn", function(msg){
-		peeqo_io.emit("lightsOn","yes")
-	})
-
-	socket.on("lightsOff", function(msg){
-		peeqo_io.emit("lightsOff","yes")
-	})
-
-	socket.on("blinkLed", function(msg){
-		peeqo_io.emit("blinkLed", "yes")
-	})
-
-	socket.on("sayYes", function(msg){
-		peeqo_io.emit("sayYes", "yes")
-	})
-
-	socket.on("resetAll", function(msg){
-		peeqo_io.emit("resetAll","yes")
-	})
-
-	socket.on("showDance", function(msg){
-		peeqo_io.emit("showDance", "yes")
-	})
-
-	socket.on("showExpression", function(msg){
-		peeqo_io.emit("showExpression","yes")
-	})
-
-	socket.on("sleep", function(msg){
-		peeqo_io.emit("sleep","yes")
-	})
-
-	socket.on("wakeUp", function(msg){
-		peeqo_io.emit("wakeUp","yes")
-	})
-
-	socket.on("deactivateMusic", function(msg){
-		peeqo_io.emit("deactivateMusic", "yes")
-	})
-
-	socket.on("unblockFacebook", function(msg){
-		peeqo_io.emit("unblockFacebook", "yes")
-	})
-
-	socket.on("unblockTwitter", function(msg){
-		peeqo_io.emit("unblockTwitter", "yes")
-	})
-
-
-	socket.on("animate", function(msg){
-		peeqo_io.emit("animate", msg)
-	})
-
-
-	socket.on("startBle", function(msg){
-		peeqo_io.emit("startBle","yes")
-	})
-
-	socket.on("showExpressions", function(msg){
-		peeqo_io.emit("showExpressions","yes");
-	})
-
-	socket.on("move", function(msg){
-		peeqo_io.emit("move","yes")
-		console.log("got moving")
-	})
-
-	
-
-	socket.on("idle", function(msg){
-		peeqo_io.emit("idle","yes")
-	})
-
-	socket.on("stopIdle", function(msg){
-		peeqo_io.emit("stopIdle","yes")
-	})
-
-	socket.on("moveCurious", function(msg){
-		peeqo_io.emit("moveCurious","yes")
-	})
-
-	socket.on("moveHappy", function(msg){
-		peeqo_io.emit("moveHappy","yes")
-	})
-
-	socket.on("moveSad", function(msg){
-		peeqo_io.emit("moveSad","yes")
-	})
-
-	socket.on("moveNo", function(msg){
-		peeqo_io.emit("moveNo","yes")
-	})
-
-	socket.on("moveAlert", function(msg){
-		peeqo_io.emit("moveAlert","yes")
-	})
+peeqo_power.on('connection', function(socket){
+	console.log('peeqo power connected')
 
-	socket.on("moveReset", function(msg){
-		peeqo_io.emit("moveReset","yes")
+	socket.on('ip', function(data){
+		server_power.emit("ip",data)
 	})
-
-	socket.on("ledFade", function(msg){
-		peeqo_io.emit("ledFade","yes")
-	})
-
-	socket.on("ledAlert", function(msg){
-		peeqo_io.emit("ledAlert","yes")
-	})
-
-	socket.on("ledError", function(msg){
-		peeqo_io.emit("ledError","yes")
-	})
-
-	socket.on("ledIdle", function(msg){
-		peeqo_io.emit("ledIdle","yes")
-	})
-
-	socket.on('getIp', function(msg){
-		peeqo_io.emit("getIp","yes")
-	})
-
-	socket.on('refresh', function(msg){
-		peeqo_io.emit("refresh","yes")
-	})
-
-	socket.on("remote-gif", function(msg){
-		peeqo_io.emit("remote-gif",msg)
-	})
-
-	socket.on("servo-raw", function(msg){
-		peeqo_io.emit("servo-raw",msg)
-	})
-
-	socket.on("direct-gif", function(msg){
-		peeqo_io.emit("direct-gif",msg)
-	})
-
 })
 
-// socket connections from chrome extension
+server_power.on('connection', function(socket){
+	console.log('server power connected')
 
-var extension_io = io.of('/extension')
+	socket.on('shutdown', function(data){
+		peeqo_power.emit('shutdown')
+	})
 
-extension_io.on('connection', function(socket){
+	socket.on('reboot', function(data){
+		peeqo_power.emit('reboot')
+	})
+
+	socket.on('refresh', function(data){
+		peeqo_power.emit('refresh')
+	})
+
+	socket.on('reset', function(data){
+		peeqo_power.emit('reset')
+	})
+
+	socket.on('ip', function(data){
+		peeqo_power.emit('ip')
+	})
+})
+
+// END OF POWER SOCKETS
+
+// WIFI SOCKETS
+
+var server_wifi = io.of('/server_wifi')
+var peeqo_wifi = io.of('/peeqo_wifi')
+
+peeqo_wifi.on('connection', function(socket){
+	console.log('peeqo wifi connected')
+})
+
+server_wifi.on('connection', function(socket){
+
+	socket.on('wifi', function(msg){
+		peeqo_wifi.emit("wifi",msg)
+	})
+})
+
+// END OF WIFI SOCKETS
+
+// DEMO SOCKETS
+
+var server_demo = io.of('/server_demo')
+var peeqo_demo = io.of('/peeqo_demo')
+
+peeqo_demo.on('connection', function(socket){
+	console.log('peeqo demo connected')
+})
+
+server_demo.on('connection', function(socket){
+
+	socket.on('sleep', function(msg){
+		peeqo_demo.emit("sleep","yes");
+	})
+
+	socket.on('wake', function(msg){
+		peeqo_demo.emit("wake","yes");
+	})
+
+	socket.on('listen', function(){
+		peeqo_demo.emit("listen","yes")
+	})
+
+	socket.on('local', function(){
+		peeqo_demo.emit("local","yes")
+	})
+
+	socket.on('remote', function(){
+		peeqo_demo.emit("remote","yes")
+	})
+
+	socket.on('hi', function(){
+		peeqo_demo.emit("hi","yes")
+	})
+
+	socket.on('bye', function(){
+		peeqo_demo.emit("bye","yes")
+	})
+
+	socket.on('yes', function(){
+		peeqo_demo.emit("yes","yes")
+	})
+
+	socket.on('no', function(){
+		peeqo_demo.emit("no","yes")
+	})
+
+	socket.on('happy', function(){
+		peeqo_demo.emit("happy","yes")
+	})
+
+	socket.on('sad', function(){
+		peeqo_demo.emit("sad","yes")
+	})
+
+	socket.on('reset', function(){
+		peeqo_demo.emit("reset","yes")
+	})
+})
+
+// END DEMO SOCKETS
+
+// CHROME EXTENSION SOCKETS
+
+var server_extension = io.of('/extension')
+var peeqo_extension = io.of('/peeqo_extension')
+
+peeqo_extension.on('connection', function(socket){
+	console.log('peeqo extension connected')
+})
+
+server_extension.on('connection', function(socket){
 	console.log("extension connected")
 
 	socket.on('blocked', function(msg){
 		// console.log("URL :" + msg.url)
-		peeqo_io.emit("blocked", msg.url)
+		peeqo_extension.emit("blocked", msg.url)
 	})
-
-	socket.on('notes', function(msg){
-		console.log("send all notes");
-
-		//send 10 latest notes
-		if(notes.length < 10){
-			socket.emit('notes', notes)
-		} else {
-			socket.emit('notes', notes[10])
-		}
-		
-	})
-
-	socket.on('img', function(msg){
-		if(latestImage != null){
-			socket.emit("img",latestImage);
-		}
-	})
-
 
 })
 
-// socket connections from peeqo
-var latestImage = null;
+// END CHROME EXTENSION SOCKETS
 
-var peeqo_io = io.of('/peeqo')
+// TEST SOCKETS
 
-var notes = []
+var server_test = io.of('/server_test')
+var peeqo_test = io.of('/peeqo_test')
 
-peeqo_io.on('connection', function(socket){
-	console.log("peeqo connected");
+peeqo_test.on('connection', function(socket){
+	console.log('peeqo tests connected')
+})
 
-	socket.on("addNote", function(note){
-		//save note in variable
-		notes.unshift(note);
+server_test.on('connection', function(socket){
+	console.log('server tests connected')
+
+	// music
+	socket.on("activateMusic", function(msg){
+		peeqo_test.emit("activateMusic","yes")
 	})
 
-	socket.on('img', function(data){
-		console.log("got image");
-		//extension_io.emit("img", data);
-		latestImage = data;
+	socket.on("playMusic", function(msg){
+		peeqo_test.emit("playMusic", "yes")
 	})
-	//extension_io.emit('note', newnote)
 
-	socket.on('peeqoIp', function(msg){
-		controlpanel_io.emit("peeqoIp",msg)
+	socket.on("deactivateMusic", function(msg){
+		peeqo_test.emit("deactivateMusic", "yes")
+	})
+
+	socket.on("stopMusic", function(msg){
+		peeqo_test.emit("stopMusic","yes")
+	})
+
+	// camera
+	socket.on('cameraOn', function(msg){
+		peeqo_test.emit("cameraOn","yes")
+	})
+
+	socket.on('cameraOff', function(msg){
+		peeqo_test.emit("cameraOff","yes")
+	})
+
+	socket.on('takePicture', function(msg){
+		peeqo_test.emit("takePicture","yes")
+	})
+
+	// lights
+	socket.on('lightsOff', function(msg){
+		peeqo_test.emit("lightsOff","yes");
+	})
+
+	socket.on('lightsOn', function(msg){
+		peeqo_test.emit("lightsOn","yes");
+	})
+
+	// block sites
+	socket.on('blockReddit', function(msg){
+		peeqo_test.emit("blockReddit","yes");
+	})
+
+	socket.on("blockFacebook", function(msg){
+		peeqo_test.emit("blockFacebook","yes")
+	})
+
+	socket.on("blockTwitter", function(msg){
+		peeqo_test.emit("blockTwitter","yes")
+	})
+
+	socket.on('unblockReddit', function(msg){
+		peeqo_test.emit("unblockReddit","yes");
+	})
+
+	socket.on("unblockFacebook", function(msg){
+		peeqo_test.emit("unblockFacebook", "yes")
+	})
+
+	socket.on("unblockTwitter", function(msg){
+		peeqo_test.emit("unblockTwitter", "yes")
+	})
+
+	// leds
+	socket.on("blinkLed", function(msg){
+		peeqo_test.emit("blinkLed", "yes")
+	})
+
+})
+
+// END TEST SOCKETS
+
+// WEB CONTROLS
+
+var server_webcontrol = io.of('/server_webcontrol')
+var peeqo_webcontrol = io.of('/peeqo_webcontrol')
+
+peeqo_webcontrol.on('connection', function(socket){
+	console.log('peeqo web controls connected')
+})
+
+server_webcontrol.on('connection', function(socket){
+	console.log('server web controls connected')
+
+	socket.on("remote-gif", function(msg){
+		peeqo_webcontrol.emit("remote-gif",msg)
+	})
+
+	socket.on("servo-raw", function(msg){
+		peeqo_webcontrol.emit("servo-raw",msg)
+	})
+
+	socket.on("direct-gif", function(msg){
+		peeqo_webcontrol.emit("direct-gif",msg)
+	})
+
+	socket.on("reset", function(msg){
+		peeqo_webcontrol.emit("reset")
+	})
+
+	socket.on("animate", function(msg){
+		peeqo_webcontrol.emit("animate", msg)
 	})
 })
+
+
+// END WEB CONTROLS
 
 
 http.listen(3000, function(){
